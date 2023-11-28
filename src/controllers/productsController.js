@@ -1,4 +1,4 @@
-const { index, findOne } = require("../models/product.model")
+const { index, findOne, createProduct } = require("../models/product.model")
 
 const toThousand = (n) => {
   // Separar parte entera y decimal
@@ -49,8 +49,15 @@ const controller = {
 	
 	// Create -  Method to store
 	store: (req, res) => {
-		// logic to create prod
+		console.log("entro por el controller, req.body ", req.body)
+		console.log("entro por el controller, req.file ", req.file)
 
+		const product = req.body
+		// aca llamo al metodo del modelo
+		product.image = req.file.filename
+		// luego redirijo
+		createProduct(product)
+		res.redirect("/products")
 	},
 
 	// Update - Form to edit
