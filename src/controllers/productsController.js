@@ -1,4 +1,6 @@
 const { index, findOne, createProduct } = require("../models/product.model")
+const fs = require("fs")
+const path = require("path")
 
 const toThousand = (n) => {
   // Separar parte entera y decimal
@@ -68,15 +70,33 @@ const controller = {
 	},
 	// Update - Method to update
 	update: (req, res) => {
-		// Do the magic
-		res.send({message: "OK123123123"})
+		const productos = index()
+		const id = req.params.id
+		
+		const productosUpdated = productos.map(producto =>{
+			if(producto.id == id){
+				producto = req.body
+				producto.id = id
+				if(req.file){			
+					producto.image = req.file.filename
+				}				
+			}
+			return producto
+		})
+		const productoActualizado = JSON.stringify(productosUpdated, null, 2) 
+		fs.writeFileSync(path.resolve(__dirname, "../data/productsDataBase.json"), productoActualizado)		
+		res.redirect(`/products/detail/${id}`)	
+		
 	},
 
 	// Delete - Delete one product from DB
 	destroy: (req, res) => {
-		console.log("query", req.query)
-		// Do the magic
-		res.status(200).send({message: "OK"})
+		const productos = index()
+		const id = req.params.id
+		const productosRestantes = productos.filter(producto => producto.id != id)
+		const productosGuardar = JSON.stringify(productosRestantes, null, 2)
+		fs.writeFileSync(path.resolve(__dirname, "../data/productsDataBase.json"), productosGuardar)
+		res.redirect("/")		
 	}
 };
 

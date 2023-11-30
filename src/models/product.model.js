@@ -14,7 +14,7 @@ const model = {
     // 3. pushear el producto nuevo en la lista de productos
     allProducts.push(product)
     // 4. volver a guardar los productos en el JSON
-    writeFileSync(model.products, JSON.stringify(allProducts))
+    writeFileSync(model.products, JSON.stringify(allProducts, null, 2 ))
   }
   
 }
